@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 
-const StatCard = ({ title, value, subtext, color }) => (
+const StatCard = ({ title, value, subtext, percentage, color }) => (
     <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="flex items-center justify-between space-y-0 pb-2">
             <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
@@ -11,40 +11,44 @@ const StatCard = ({ title, value, subtext, color }) => (
             {subtext}
         </p>
         <div className={`h-1 w-full mt-4 rounded-full bg-muted overflow-hidden`}>
-            <div className={`h-full ${color}`} style={{ width: '70%' }}></div> 
+            <div className={`h-full ${color}`} style={{ width: percentage }}></div> 
             {/* Width hardcoded for demo, normally calculated */}
         </div>
     </div>
 );
 
-const StatsOverview = ({ jobs }) => {
-    // Count jobs where isApplied is 'Done' (or maybe 'Done' and 'In Progress'? User said "Total Applied", usually means finished applications)
-    // Let's stick to 'Done' to be precise, or maybe user considers 'In Progress' as "working on it". 
-    // "Total Applied" strongly implies sent.
+const StatsOverview = ({ jobs, goal = 50 }) => {
+    // Count jobs where isApplied is 'Done'
     const totalApplied = jobs.filter(j => j.isApplied === 'Done').length;
     const interviewCount = jobs.filter(j => j.response === 'Interview').length;
     const offerCount = jobs.filter(j => j.response === 'Offer').length;
     
+    // Calculate Rates
     const interviewRate = totalApplied > 0 ? Math.round((interviewCount / totalApplied) * 100) : 0;
+    const offerRate = totalApplied > 0 ? Math.round((offerCount / totalApplied) * 100) : 0;
+    const goalPercentage = Math.min(Math.round((totalApplied / goal) * 100), 100);
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
             <StatCard 
                 title="Total Applied" 
                 value={totalApplied} 
-                subtext="Applications sent"
-                color="bg-blue-500"
+                subtext={`Goal: ${goal} applications`}
+                percentage={`${goalPercentage}%`}
+                color="bg-primary"
             />
             <StatCard 
                 title="Interview Rate" 
                 value={`${interviewRate}%`} 
                 subtext={`${interviewCount} interviews secured`}
+                percentage={`${interviewRate}%`}
                 color="bg-purple-500"
             />
             <StatCard 
                 title="Offers" 
                 value={offerCount} 
                 subtext="Jobs landed!"
+                percentage={`${offerRate}%`}
                 color="bg-emerald-500"
             />
              {/* Placeholder for future stat */}

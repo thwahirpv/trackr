@@ -8,83 +8,45 @@ import { useState } from 'react';
 import Logout from './Logout';
 
 
-const navOptions = [
-    {
-        key: 1004,
-        name: "Contacts", 
-        href: "/contacts", 
-        isNeedAuth: true,
-        isCurrent: false,
-    },
-    {
-        key: 1001,
-        name: "Login", 
-        href: "/login", 
-        isNeedAuth: false,
-        isCurrent: false
-    },
-    {
-        key: 1002,
-        name: "Register",
-        href: "/register",
-        isNeedAuth: false,
-        isCurrent: false,
-    },  
-    {
-        key: 1003,
-        name: "Logout",
-        href : "/logout",
-        isNeedAuth: true,
-        isCurrent: false
-    }, 
-    
-]
+
 
 
 const NavbarOptions = ({session}) => {
     const [isOpen, setIsOpen] = useState(false)
   return (
-    <div className='flex flex-row  justify-between items-center h-[64px] w-full bg-white shadow-md px-8'>
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6">
       <div>
         <div>
-            <Link  
-            href="/"
-            className='text-primary font-bold text-xl flex items-center'>
-                <span className="mr-2">🚀</span> Trackr
+            <Link href="/" className="flex flex-col">
+                <span className="font-bold text-2xl tracking-tighter bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                    Trackr
+                </span>
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest -mt-1">
+                    Your journey to hired
+                </span>
             </Link>
         </div>
       </div>
       <div className='block md:hidden'>
         <button 
         onClick={() => setIsOpen(!isOpen)}
-        className='text-black transition-all duration-400 ease-in-out'>
+        className='text-foreground transition-all duration-400 ease-in-out'>
             {
                 isOpen ? <GrClose /> : <SlMenu />
             }
         </button>
       </div>
-      <div className={`absolute md:static right-8 ${isOpen ? "top-[80px]" : "-top-[100px]"} transition-all duration-400 ease-in-out z-10`}>
-        <div className='flex flex-col md:flex-row gap-x-8 gap-y-4 md:gap-y-0 bg-white md:bg-transparent p-5 rounded-md'> 
-            {
-                session ? (
-                    <>
-                        <Logout />
-                    </>
-                ) : (
-                    <>
-                        <Link className='text-black text-sm cursor-pointer' href='/login' >
-                            Login
-                        </Link>
-                        <Link className='text-black text-sm cursor-pointer' href='/register' >
-                            Register
-                        </Link>
-                        
-                    </>
-                )
-            }
+      <div className={`absolute md:static right-0 w-full md:w-auto ${isOpen ? "top-[64px] border-b border-border" : "-top-[400px]"} transition-all duration-300 ease-in-out z-10 bg-background md:bg-transparent`}>
+        <div className='flex flex-col md:flex-row items-center gap-x-6 gap-y-4 p-6 md:p-0'> 
+            <Link className='text-sm font-medium text-muted-foreground transition-colors hover:text-primary' href='/login' >
+                Login
+            </Link>
+            <Link className='inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 w-full md:w-auto' href='/register' >
+                Register
+            </Link>
         </div>
       </div>
-    </div>
+    </header>
   )
 }
 

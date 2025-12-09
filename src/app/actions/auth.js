@@ -1,14 +1,14 @@
 "use server"
 
 import connectToDatabase from "@/lib/db";
-import { clearSession, setSession } from "@/lib/session";
+import { clearSession, getSession, setSession } from "@/lib/session";
 import { userModel } from "@/model/User";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { AppError } from "@/lib/exceptions";
 
 
-export const registerAction = async ({name, email, password}) => {
+export const registerAction = async ({name, email, password, applicationGoal}) => {
     try {
         await connectToDatabase()
         const user = await userModel.findOne({email})
@@ -19,7 +19,8 @@ export const registerAction = async ({name, email, password}) => {
         await userModel.create({
             name, 
             email,
-            password
+            password,
+            applicationGoal: Number(applicationGoal) || 50
         })
 
         return {
@@ -50,7 +51,7 @@ export const loginAction = async ({email, password}) => {
             throw new AppError("Invalid Password", 401, "password")
         }
 
-        await setSession({name: user.name, email: user.email, id: user._id})
+        await setSession({name: user.name, email: user.email, id: user._id, applicationGoal: user.applicationGoal || 50})
         revalidatePath("/");
         return {
             status: true,
@@ -73,4 +74,25 @@ export const loginAction = async ({email, password}) => {
 export const logOutAction = async () => {
     await clearSession()
     redirect("/login")
+}
+
+export const updateUserGoal = async (goal) => {
+    const session = await getSession();
+    if(!session) {
+        await clearSession();
+        redirect("/login");
+    }
+
+    try {
+        await connectToDatabase();
+        
+        await userModel.findByIdAndUpdate(session.id, {
+            applicationGoal: Number(goal)
+        });
+
+        revalidatePath("/"); 
+        return { status: true, message: "Goal Updated" };
+    } catch (error) {
+        return { status: false, message: error.message };
+    }
 }

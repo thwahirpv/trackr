@@ -2,6 +2,7 @@ import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import connectToDatabase from "@/lib/db";
 import { jobModel } from "@/model/Job";
+import { userModel } from "@/model/User";
 import JobCard from "./_components/JobCard";
 import StatsOverview from "./_components/StatsOverview";
 import DashboardLayout from "./_components/DashboardLayout";
@@ -18,6 +19,9 @@ export default async function Home({ searchParams }) {
 
   await connectToDatabase();
   
+  const user = await userModel.findById(session.id);
+  const applicationGoal = user?.applicationGoal || 50;
+  
   const { status, query: searchQuery } = await searchParams; // Assuming we might pass search via URL too
   const dbQuery = { userId: session.id };
 
@@ -33,10 +37,11 @@ export default async function Home({ searchParams }) {
       ];
   }
 
-  const jobs = await jobModel.find(dbQuery).sort({ createdAt: -1 }).limit(4);
+  const allJobs = await jobModel.find(dbQuery).sort({ createdAt: -1 })
+  const recentJobs = allJobs.slice(0, 4);
 
   // Serialization
-  const serializedJobs = jobs.map(job => ({
+  const serializedJobs = allJobs.map(job => ({
     ...job.toObject(), 
     _id: job._id.toString(), 
     userId: job.userId.toString(),
@@ -45,10 +50,21 @@ export default async function Home({ searchParams }) {
     applicationDate: (job.applicationDate || job.createdAt)?.toISOString()
   }));
 
+  const serializedRecentJobs = recentJobs.map(job => ({
+    ...job.toObject(), 
+    _id: job._id.toString(), 
+    userId: job.userId.toString(),
+    createdAt: job.createdAt?.toISOString(),
+    updatedAt: job.updatedAt?.toISOString(),
+    applicationDate: (job.applicationDate || job.createdAt)?.toISOString()
+  }));
+
+  
+
   return (
-    <DashboardLayout>
+    <DashboardLayout applicationGoal={applicationGoal}>
         {/* Stats */}
-        <StatsOverview jobs={serializedJobs} />
+        <StatsOverview jobs={serializedJobs} goal={applicationGoal} />
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div className="flex items-center gap-4">
@@ -66,7 +82,7 @@ export default async function Home({ searchParams }) {
                 </div>
         </div>
 
-        {serializedJobs.length === 0 ? (
+        {serializedRecentJobs.length === 0 ? (
             <div className="text-center py-20 bg-card rounded-xl border border-dashed border-border animate-in fade-in zoom-in-95 duration-300">
                 <div className="text-6xl mb-4">🚀</div>
                 <h3 className="text-xl font-bold mb-2">Ready for takeoff?</h3>
@@ -82,7 +98,7 @@ export default async function Home({ searchParams }) {
             </div>
         ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {serializedJobs.map((job) => (
+                {serializedRecentJobs.map((job) => (
                     <JobCard key={job._id} job={job} />
                 ))}
             </div>

@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
     name: {type: String, required: true },
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},  
+    applicationGoal: {type: Number, default: 50}
 }, {timestamps: true})
 
 
@@ -16,6 +17,10 @@ userSchema.pre("save", async function () {
 
 userSchema.methods.comparePassword = async function (password) {
     return await bcrypt.compare(password, this.password)
+}
+
+if (process.env.NODE_ENV === "development") {
+  delete mongoose.models.User;
 }
 
 export const userModel = mongoose.models.User || mongoose.model('User', userSchema)

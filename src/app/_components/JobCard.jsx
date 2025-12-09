@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FaPhone, FaEnvelope, FaExternalLinkAlt, FaCheckCircle, FaRegCircle, FaCalendarAlt } from 'react-icons/fa';
+import { FaPhoneAlt, FaEnvelope, FaExternalLinkAlt, FaCheckCircle, FaRegCircle, FaCalendarAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 
 const StatusBadge = ({ status }) => {
@@ -70,7 +70,7 @@ const JobCard = ({ job }) => {
                      )}
                      {job.phone && (
                         <div className="flex items-center text-xs text-muted-foreground">
-                             <FaPhone className="mr-2 h-3 w-3" />
+                             <FaPhoneAlt className="mr-2 h-3 w-3" />
                              <span className="truncate">{job.phone}</span>
                         </div>
                      )}
