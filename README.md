@@ -2,8 +2,8 @@
 
 **Trackr** is a modern, responsive job application tracking dashboard designed to help job seekers organize their job haunt efficiently. With a sleek glassmorphism design and intuitive interface, it allows users to track applications, monitor interview rates, and set monthly goals.
 
-![Trackr Dashboard](https://github.com/user-attachments/assets/placeholder-image-url) 
-*(Note: Replace with actual screenshot)*
+![Trackr Dashboard](https://github.com/thwahirpv/Trackr/tree/main/public/dashboard.png)
+
 
 ## ✨ Features
 
