@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link'
+import Image from 'next/image'
 import React from 'react'
 import { SlMenu } from "react-icons/sl";
 import { GrClose } from "react-icons/gr";
@@ -18,9 +19,14 @@ const NavbarOptions = ({session}) => {
       <div>
         <div>
             <Link href="/" className="flex flex-col">
-                <span className="font-bold text-2xl tracking-tighter bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                    Trackr
-                </span>
+                <Image 
+                    src="/logo.png" 
+                    alt="Trackr Logo" 
+                    width={120} 
+                    height={40} 
+                    className="h-8 w-auto object-contain"
+                    priority
+                />
                 <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest -mt-1">
                     Your journey to hired
                 </span>

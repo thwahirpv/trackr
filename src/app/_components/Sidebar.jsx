@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { FaRocket, FaChartPie, FaCog, FaSignOutAlt } from 'react-icons/fa';
 
@@ -16,9 +17,16 @@ const Sidebar = () => {
     return (
         <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-card hidden md:flex flex-col">
             <div className="flex flex-col justify-center h-16 px-6 border-b border-border">
-                <span className="font-bold text-2xl tracking-tighter bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                    Trackr
-                </span>
+                <Link href="/">
+                    <Image 
+                        src="/logo.png" 
+                        alt="Trackr Logo" 
+                        width={120} 
+                        height={40} 
+                        className="h-8 w-auto object-contain"
+                        priority
+                    />
+                </Link>
                 <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest -mt-1">
                     Your journey to hired
                 </span>

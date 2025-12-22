@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import Image from 'next/image';
 import { FaSearch, FaUserCircle, FaBullseye, FaTimes, FaBars, FaChartPie } from 'react-icons/fa';
 import { useDebounce } from 'use-debounce';
 import { logOutAction, updateUserGoal } from '../actions/auth';
+import Link from 'next/link';
 
 
 const TopBar = ({ currentGoal = 50 }) => {
@@ -99,8 +101,17 @@ const TopBar = ({ currentGoal = 50 }) => {
                 </button>
 
                 {/* Mobile Brand (visible only on mobile) */}
-                 <div className="md:hidden font-bold text-lg bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mr-auto">
-                    Trackr
+                 <div className="md:hidden mr-auto">
+                    <Link href="/">
+                        <Image 
+                            src="/logo.png" 
+                            alt="Trackr Logo" 
+                            width={100} 
+                            height={32} 
+                            className="h-8 w-auto object-contain"
+                            priority
+                        />
+                    </Link>
                 </div>
 
                 <div className="hidden md:flex flex-1 items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
