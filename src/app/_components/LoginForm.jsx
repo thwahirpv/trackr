@@ -8,8 +8,14 @@ const LoginForm = () => {
     const [ unknownError, setUnknownError ] = useState(null)
     const [ emailError, setEmailError ] = useState(null)
     const [ passwordError, setPasswordError ] = useState(null)
+    const [ isLoading, setIsLoading ] = useState(false)
 
-    const handleLogin = async (formData) => {
+    const handleLogin = async (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+        
+        setIsLoading(true)
+
         setEmailError(null)
         setPasswordError(null)
         setUnknownError(null)
@@ -22,6 +28,7 @@ const LoginForm = () => {
         if (res.status) {
             redirect("/")
         } else {
+            setIsLoading(false)
             if(res.errorType == 'email') {
                 setEmailError(res.message)
             }
@@ -34,10 +41,10 @@ const LoginForm = () => {
         }
     }
   return (
-    <form action={handleLogin} className='space-y-4'>
+    <form onSubmit={handleLogin} className='space-y-4'>
       <div className="space-y-2">
         <label htmlFor="email"
-        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${emailError || unknownError ? "text-destructive" : "text-foreground"}`}>
+        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${emailError || unknownError ? "text-red-500" : "text-foreground"}`}>
             {
                 emailError ? emailError : unknownError ? unknownError : "Email"
             }
@@ -53,7 +60,7 @@ const LoginForm = () => {
       </div>
       <div className="space-y-2">
         <label htmlFor="password"
-        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${passwordError ? "text-destructive" : "text-foreground"}`}>
+        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${passwordError ? "text-red-500" : "text-foreground"}`}>
             {
                 passwordError ? passwordError : "Password"
             }
@@ -67,8 +74,12 @@ const LoginForm = () => {
             className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'  
         />
       </div>
-      <button type='submit' className='inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-full mt-2 cursor-pointer'>
-        Login
+      <button 
+        type='submit' 
+        disabled={isLoading}
+        className='inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-full mt-2 cursor-pointer'
+      >
+        {isLoading ? "Logging in..." : "Login"}
       </button>
     </form>
   )

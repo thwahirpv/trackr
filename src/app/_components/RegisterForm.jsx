@@ -10,8 +10,13 @@ const RegisterForm = () => {
     const [ nameError, setNameError ] = useState(null)
     const [ emailError, setEmailError ] = useState(null)
     const [ passwordError, setPasswordError ] = useState(null)
+    const [ isLoading, setIsLoading ] = useState(false)
 
-    const handleResiter = async (formData) => {
+    const handleResiter = async (e) => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+
+        setIsLoading(true)
         setNameError(null)
         setEmailError(null)
         setPasswordError(null)
@@ -19,14 +24,17 @@ const RegisterForm = () => {
 
         if(formData.get('name').length < 3) {
             setNameError("Name must be at least 3 characters!")
+            setIsLoading(false)
             return
         }
         else if(formData.get('email').length > 4 && !formData.get('email').includes('@')) {
             setEmailError("Invalid Email Address!")
+            setIsLoading(false)
             return
         }
         else if(formData.get('password').length < 4 || formData.get('password').length > 8) {
             setPasswordError("Password must be between 4 and 8 characters!")
+            setIsLoading(false)
             return
         }
 
@@ -41,6 +49,7 @@ const RegisterForm = () => {
             redirect("/login")
         }
         else {
+            setIsLoading(false)
             if(res.errorType == 'email') {
                 setEmailError(res.message)
             }
@@ -50,10 +59,10 @@ const RegisterForm = () => {
         }
     }
   return (
-    <form action={handleResiter} className='space-y-4'>
+    <form onSubmit={handleResiter} className='space-y-4'>
       <div className="space-y-2">
         <label htmlFor="name"
-        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${nameError || unknownError ? 'text-destructive' : 'text-foreground'}`}>
+        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${nameError || unknownError ? 'text-red-500' : 'text-foreground'}`}>
             {
                 nameError ? nameError : unknownError ? unknownError : "Name"
             }
@@ -69,7 +78,7 @@ const RegisterForm = () => {
       </div>
       <div className="space-y-2">
         <label htmlFor="email"
-        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${emailError ? 'text-destructive' : 'text-foreground'}`}>
+        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${emailError ? 'text-red-500' : 'text-foreground'}`}>
             {
                 emailError ? emailError : "Email"
             }
@@ -85,7 +94,7 @@ const RegisterForm = () => {
       </div>
       <div className="space-y-2">
         <label htmlFor="password"
-        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${passwordError ? 'text-destructive' : 'text-foreground'}`}>
+        className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${passwordError ? 'text-red-500' : 'text-foreground'}`}>
             {
                 passwordError ? passwordError : "Password"
             }
@@ -115,8 +124,12 @@ const RegisterForm = () => {
         />
       </div>
 
-      <button type='submit' className='inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-full mt-2 cursor-pointer'>
-        Register
+      <button 
+        type='submit' 
+        disabled={isLoading}
+        className='inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-full mt-2 cursor-pointer'
+      >
+        {isLoading ? "Signing Up..." : "Register"}
       </button>
     </form>
   )
