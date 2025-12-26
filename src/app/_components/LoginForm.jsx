@@ -9,10 +9,11 @@ const LoginForm = () => {
     const [ emailError, setEmailError ] = useState(null)
     const [ passwordError, setPasswordError ] = useState(null)
     const [ isLoading, setIsLoading ] = useState(false)
+    const [email, setEmail] = useState('thwahirpv@gmail.com')
+    const [password, setPassword] = useState('123456')
 
     const handleLogin = async (e) => {
         e.preventDefault()
-        const formData = new FormData(e.target)
         
         setIsLoading(true)
 
@@ -20,9 +21,21 @@ const LoginForm = () => {
         setPasswordError(null)
         setUnknownError(null)
 
+        if (!email) {
+            setEmailError("Email is required")
+            setIsLoading(false)
+            return
+        }
+
+        if (!password) {
+            setPasswordError("Password is required")
+            setIsLoading(false)
+            return
+        }
+
         const res = await loginAction({
-            email: formData.get("email"),
-            password: formData.get("password")
+            email: email,
+            password: password
         })
 
         if (res.status) {
@@ -54,6 +67,8 @@ const LoginForm = () => {
             type="email" 
             name='email' 
             placeholder='Enter your email' 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'  
         />
@@ -70,6 +85,8 @@ const LoginForm = () => {
             type="password" 
             name='password' 
             placeholder='Enter your password' 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className='flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'  
         />
